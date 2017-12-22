@@ -1,5 +1,8 @@
 package com.build.qa.build.selenium.tests;
 
+import com.build.qa.build.selenium.pageobjects.homepage.ProductPage;
+import com.build.qa.build.selenium.pageobjects.homepage.SearchResultsProductPage;
+import com.build.qa.build.selenium.pageobjects.homepage.ShoppingCartPage;
 import org.junit.Test;
 
 import com.build.qa.build.selenium.framework.BaseFramework;
@@ -14,11 +17,10 @@ public class BuildTest extends BaseFramework {
 	@Test
 	public void navigateToHomePage() { 
 		driver.get(getConfiguration("HOMEPAGE"));
-		HomePage homePage = new HomePage(driver, wait);
-		
-		softly.assertThat(homePage.onBuildTheme())
-			.as("The website should load up with the Build.com desktop theme.")
-			.isTrue();
+		HomePage homePage = new HomePage(driver);
+		homePage.enterEmail("galexholmes@gmail.com");
+		homePage.submitEmail();
+		homePage.BuildTheme();
 	}
 	
 	/** 
@@ -27,8 +29,15 @@ public class BuildTest extends BaseFramework {
 	 * @difficulty Easy
 	 */
 	@Test
-	public void searchForProductLandsOnCorrectProduct() { 
-		// TODO: Implement this test
+	public void searchForProductLandsOnCorrectProduct() {
+		driver.get(getConfiguration("HOMEPAGE"));
+		HomePage homePage = new HomePage(driver);
+		homePage.enterEmail("galexholmes@gmail.com");
+		homePage.submitEmail();
+		homePage.BuildTheme();
+		homePage.searchProduct("Quoizel MY1613");
+		SearchResultsProductPage searchResultsProductPage= new SearchResultsProductPage(driver);
+		searchResultsProductPage.verifyHeader("Quoizel MY1613");
 	}
 	
 	/** 
@@ -38,8 +47,19 @@ public class BuildTest extends BaseFramework {
 	 * @difficulty Easy-Medium
 	 */
 	@Test
-	public void addProductToCartFromCategoryDrop() { 
-		// TODO: Implement this test
+	public void addProductToCartFromCategoryDrop() {
+		driver.get(getConfiguration("HOMEPAGE"));
+		HomePage homePage = new HomePage(driver);
+		homePage.enterEmail("galexholmes@gmail.com");
+		homePage.submitEmail();
+		homePage.navigateToProduct("https://www.build.com/bathroom-sinks/c108504");
+		SearchResultsProductPage searchResultsProductPage= new SearchResultsProductPage(driver);
+		searchResultsProductPage.addProduct();
+		ProductPage productPage= new ProductPage(driver);
+		productPage.addToCart();
+		productPage.verifyProductAdded();
+
+
 	}
 	
 	/** 
@@ -49,8 +69,29 @@ public class BuildTest extends BaseFramework {
 	 * @difficulty Medium-Hard
 	 */
 	@Test
-	public void addProductToCartAndEmailIt() { 
-		// TODO: Implement this test
+	public void addProductToCartAndEmailIt() {
+		driver.get(getConfiguration("HOMEPAGE"));
+		HomePage homePage = new HomePage(driver);
+		homePage.enterEmail("galexholmes@gmail.com");
+		homePage.submitEmail();
+		homePage.navigateToProduct("https://www.build.com/bathroom-sinks/c108504");
+		SearchResultsProductPage searchResultsProductPage= new SearchResultsProductPage(driver);
+		searchResultsProductPage.addProduct();
+		ProductPage productPage= new ProductPage(driver);
+		productPage.addToCart();
+		productPage.verifyProductAdded();
+		productPage.clickCartIcon();
+		ShoppingCartPage shoppingCartPage= new ShoppingCartPage(driver);
+		shoppingCartPage.addCartToEmail();
+		shoppingCartPage.enterEmailName("Gabriel Holmes");
+		shoppingCartPage.enterEmailAddress("galexholmes@gmail.com");
+		shoppingCartPage.enterRecepientName("JGilmore");
+		shoppingCartPage.enterRecepientEmailAddress("jgilmore+SeleniumTest@build.com");
+		shoppingCartPage.enterMessage("This is Gabriel Holmes, sending you a cart from my automation!");
+		shoppingCartPage.clickEmailCartBtn();
+		shoppingCartPage.verifyEmailSentMessage("Cart Sent! The cart has been submitted to the recipient via email.");
+
+
 	}
 	
 	/** 
@@ -61,7 +102,26 @@ public class BuildTest extends BaseFramework {
 	 * @difficulty Hard
 	 */
 	@Test
-	public void facetNarrowBysResultInCorrectProductCounts() { 
-		// TODO: Implement this test
+	public void facetNarrowBysResultInCorrectProductCounts() {
+		driver.get(getConfiguration("HOMEPAGE"));
+		HomePage homePage = new HomePage(driver);
+		homePage.enterEmail("galexholmes@gmail.com");
+		homePage.submitEmail();
+		homePage.navigateToProduct("https://www.build.com/bathroom-sink-faucets/c108503");
+		SearchResultsProductPage searchResultsProductPage= new SearchResultsProductPage(driver);
+		searchResultsProductPage.getResultsCount();
+		searchResultsProductPage.clickFilter("Delta");
+		searchResultsProductPage.getFilteredCount();
+		searchResultsProductPage.filteredResults();
+		searchResultsProductPage.verifyFilteredResults(684);
+		searchResultsProductPage.clickFilter("Kohler");
+		searchResultsProductPage.getFilteredCount();
+		searchResultsProductPage.getResultsCount();
+		searchResultsProductPage.filteredResults();
+		searchResultsProductPage.verifyFilteredResults(892);
+
+
+
+
 	}
 }

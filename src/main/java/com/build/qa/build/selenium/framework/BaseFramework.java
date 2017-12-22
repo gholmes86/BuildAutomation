@@ -1,25 +1,27 @@
 package com.build.qa.build.selenium.framework;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
+import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
-import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.Wait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 public abstract class BaseFramework {
 	protected WebDriver driver;
@@ -47,17 +49,47 @@ public abstract class BaseFramework {
 	@Before
 	public void setUpBefore() {
 		DesiredCapabilities capabilities;
-		// Which driver to use? 
-		if (DRIVER_CHROME.equalsIgnoreCase(configuration.getProperty("BROWSER"))) {
-			capabilities = DesiredCapabilities.chrome();
-			driver = new ChromeDriver(capabilities);
-		} else if (DRIVER_FIREFOX.equalsIgnoreCase(configuration.getProperty("BROWSER"))) {
-			capabilities = DesiredCapabilities.firefox();
-			driver = new FirefoxDriver(capabilities);
+		String browser = System.getProperty("BROWSER");
+		if(browser==null)
+		{
+			browser = System.getenv("BROWSER");
+			if(browser==null)
+			{
+				browser= "firefox";
+			}
 		}
-		// Define fluent wait
-		wait = new FluentWait<WebDriver>(driver).withTimeout(15, TimeUnit.SECONDS).pollingEvery(500, TimeUnit.MILLISECONDS)
-				.ignoring(NoSuchElementException.class);
+		switch (browser)
+		{
+			case "chrome":
+
+				if ( StringUtils.isEmpty(System.getProperty("webdriver.chrome.driver")));
+				System.setProperty("webdriver.chrome.driver", "//Applications//chrome//chromedriver");
+				ChromeOptions options = new ChromeOptions();
+				options.addArguments("--disable-extensions");
+				options.addArguments("--start-maximized");
+				options.addArguments("--always-authorize-plugins=false");
+				driver = new ChromeDriver(options);
+				driver.manage().deleteAllCookies();
+				driver.manage().window().setSize(new Dimension(1280, 1024));
+				driver = new ChromeDriver();
+				break;
+			case "firefox":
+
+				capabilities = DesiredCapabilities.firefox();
+				driver = new FirefoxDriver(capabilities);
+
+				break;
+			case "ie":
+				driver = new InternetExplorerDriver();
+				break;
+			case "safari":
+				driver = new SafariDriver();
+				break;
+			default:
+				driver = new ChromeDriver();
+				break;
+		}
+		System.out.println("Opening Browser...."+browser);
 	}
 
 	protected WebDriver getDriver() {
