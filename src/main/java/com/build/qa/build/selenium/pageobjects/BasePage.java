@@ -1,7 +1,6 @@
 package com.build.qa.build.selenium.pageobjects;
 
 import com.build.qa.build.selenium.framework.BaseFramework;
-import com.oracle.tools.packager.Log;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -10,6 +9,8 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
+
+//import com.oracle.tools.packager.Log;
 
 public abstract class BasePage extends BaseFramework {
 
@@ -69,31 +70,7 @@ public abstract class BasePage extends BaseFramework {
         }
     }
 
-    public void clickElement(WebDriver driver, By by, int timeout) {
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, timeout);
-            JavascriptExecutor js = ((JavascriptExecutor) driver);
-            //wait for element to be present in DOM
-            wait.until(ExpectedConditions.presenceOfElementLocated(by));
-            //scroll element into view
-            WebElement element = driver.findElement(by);
-            js.executeScript("arguments[0].scrollIntoView(true);", element);
-            //wait for element to be clickable
-            wait.until(ExpectedConditions.elementToBeClickable(by));
-            js.executeScript("arguments[0].click();", element);
 
-        } catch (StaleElementReferenceException e) {
-            Log.info("StaleElementReferenceException-" + e.getLocalizedMessage());
-            e.printStackTrace();
-
-
-        } catch (WebDriverException e) {
-            Log.info("WebDriverException getMessage-" + e.getMessage());
-            e.printStackTrace();
-            Log.info("WebDriverException done");
-
-        }
-    }
 
     public void waitForDuration(int n)
     {

@@ -49,19 +49,13 @@ public class SearchResultsProductPage extends BasePage {
 		return Integer.valueOf(fil);
 	}
 	public void clickFilter(String text) {
-
+		waitForDuration(1000);
 		elementIsClickable(By.xpath("//*[@class='sub-item qa-facetGroup-Brand-facetValue-"+text+"']"));
 		find(By.xpath("//*[@class='sub-item qa-facetGroup-Brand-facetValue-"+text+"']")).click();
 		waitForDuration(5000);
+		elementIsClickable(By.xpath("//*[@class='sub-item qa-facetGroup-Brand-facetValue-"+text+"']"));
 		find(By.xpath("//*[@class='sub-item qa-facetGroup-Brand-facetValue-"+text+"']")).isSelected();
 
-	//	if(find(By.xpath("//*[@class='sub-item qa-facetGroup-Brand-facetValue-"+text+"']")).isEnabled())
-//		{
-	//		find(By.xpath("//*[@class='sub-item qa-facetGroup-Brand-facetValue-"+text+"']")).click();
-
-//		}
-//		else
-//			System.out.print("Filter selected: "+text);
 
 	}
 
