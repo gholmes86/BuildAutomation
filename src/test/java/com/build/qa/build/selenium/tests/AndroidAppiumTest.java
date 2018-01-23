@@ -27,7 +27,6 @@ public class AndroidAppiumTest {
         capabilities.setCapability("deviceName","Android Emulator");
         capabilities.setCapability("platformName", "Android");
        // capabilities.setCapability("platformVersion", "4.4");
-      //  capabilities.setCapability("appPackage", "com.vividseats.android");
       //  capabilities.setCapability("appActivity", "views.activities.MainActivity");//views.activities.MainActivity
          capabilities.setCapability("app", "/Users/gabrielholmes/Documents/build/Build.com.apk");
         capabilities.setCapability("locationServicesEnabled", "true");
